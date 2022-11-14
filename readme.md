@@ -264,12 +264,12 @@ acl AVAILABLE_WORKING time MTWHF 08:00-17:00
 Konfigurasi WISE sebagai DNS Server pada file `/etc/bind/named.conf.local`:
 
 ```
-zone \"loid-work.com\" {
+zone "loid-work.com" {
         type master;
         file \"/etc/bind/jarkom/loid-work.com\";
 };
 
-zone \"franky-work.com\" {
+zone "franky-work.com" {
         type master;
         file \"/etc/bind/jarkom/franky-work.com\";
 };
