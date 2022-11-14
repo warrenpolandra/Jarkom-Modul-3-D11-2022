@@ -371,7 +371,7 @@ delay_parameters 4 16000/16000
 include /etc/squid/acl.conf
 include /etc/squid/acl-bandwidth.conf
 
-acl WORKING_HOUR_WHITELIST dstdomain \"/etc/squid/sites.whitelist.working_hour.$
+acl WORKING_HOUR_WHITELIST dstdomain "/etc/squid/sites.whitelist.working_hour.txt"
 
 http_port 8080
 visible_hostname Berlint
