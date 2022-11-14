@@ -255,11 +255,79 @@ acl AVAILABLE_WORKING time MTWHF 08:00-17:00
 
 ### Peraturan nomor 2
 
+Konfigurasi WISE sebagai DNS Server pada file `/etc/bind/named.conf.local`:
+
+```
+zone \"loid-work.com\" {
+        type master;
+        file \"/etc/bind/jarkom/loid-work.com\";
+};
+
+zone \"franky-work.com\" {
+        type master;
+        file \"/etc/bind/jarkom/franky-work.com\";
+};
+```
+
+Membuat direktori baru pada WISE sebagai DNS Server:
+
+`mkdir /etc/bind/jarkom/`
+
+
+Membuat konfigurasi untuk `loid-work.com` pada file `/etc/bind/jarkom/loid-work.com` dengan IP tujuan Eden:
+
+```
+;
+; BIND data file for local loopback interface
+;
+\$TTL   604800
+@       IN      SOA     loid-work.com. root.loid-work.com. (
+                     0911202201         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@               IN      NS      loid-work.com.
+@               IN      A       192.190.3.13
+```
+
+Membuat konfigurasi untuk `franky-work.com` pada file `/etc/bind/jarkom/franky-work.com` dengan IP tujuan Eden:
+
+```
+;
+; BIND data file for local loopback interface
+;
+\$TTL   604800
+@       IN      SOA     franky-work.com. root.franky-work.com. (
+                     0911202202         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@               IN      NS      franky-work.com.
+@               IN      A       192.190.3.13
+```
+
+Restart bind9 dengan `service bind9 restart`
+
 Konfigurasi Berlint sebagai Proxy Server pada file `/etc/squid/sites.whitelist.working_hour.txt`:
+
 
 ```
 .loid-work.com
 .franky-work.com
+```
+
+Instalasi apache dan lynx pada Eden:
+
+```
+apt-get update
+apt-get install lynx -y
+
+apt-get install apache2 -y
+service apache2 start
 ```
 
 ### Peraturan nomor 3
