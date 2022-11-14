@@ -259,6 +259,16 @@ Konfigurasi Berlint sebagai Proxy Server pada file `/etc/squid/acl.conf`:
 acl AVAILABLE_WORKING time MTWHF 08:00-17:00
 ```
 
+#### Testing nomor 1
+
+`lynx google.com` pada jam kerja:
+
+![lynx jam kerja](https://cdn.discordapp.com/attachments/856609726225973278/1041672407024414841/image.png)
+
+`lynx google.com` pada jam libur:
+
+![lynx jam libur](https://cdn.discordapp.com/attachments/856609726225973278/1041672817931993118/image.png)
+
 ### Peraturan nomor 2
 
 Konfigurasi WISE sebagai DNS Server pada file `/etc/bind/named.conf.local`:
@@ -278,7 +288,6 @@ zone "franky-work.com" {
 Membuat direktori baru pada WISE sebagai DNS Server:
 
 `mkdir /etc/bind/jarkom/`
-
 
 Membuat konfigurasi untuk `loid-work.com` pada file `/etc/bind/jarkom/loid-work.com` dengan IP tujuan Eden:
 
@@ -336,6 +345,16 @@ apt-get install apache2 -y
 service apache2 start
 ```
 
+#### Testing nomor 2
+
+`lynx loid-work.com`:
+
+![loid-work.com](https://cdn.discordapp.com/attachments/856609726225973278/1041673126494355456/image.png)
+
+`lynx franky-work.com`:
+
+![franky-work.com](https://cdn.discordapp.com/attachments/856609726225973278/1041673512928153620/image.png)
+
 ### Peraturan nomor 3
 
 Konfigurasi Berlint sebagai Proxy Server pada file `/etc/squid/https_regex.conf`:
@@ -343,6 +362,16 @@ Konfigurasi Berlint sebagai Proxy Server pada file `/etc/squid/https_regex.conf`
 ```
 acl HTTPS url_regex ^https://(\.*)$
 ```
+
+#### Testing nomor 3
+
+http pada hari kerja jam libur:
+
+![http](https://cdn.discordapp.com/attachments/856609726225973278/1041673788565225512/image.png)
+
+https pada hari kerja jam libur:
+
+![https](https://cdn.discordapp.com/attachments/856609726225973278/1041674038692556800/image.png)
 
 ### Peraturan nomor 4
 
@@ -361,9 +390,23 @@ delay_parameters 4 16000/16000
 acl day_off time AS 00:00-24:00
 delay_pools 1
 delay_class 1 2
-delay_access 1 allow  day_off
+delay_access 1 allow day_off
 delay_parameters 4 16000/16000
 ```
+
+#### Testing nomor 4 dan 5
+
+Pada hari libur:
+
+![Limit Bandwitdth hari libur](https://cdn.discordapp.com/attachments/856609726225973278/1041670643495735296/image.png)
+
+Pada jam kerja:
+
+![Limit Bandwidth jam kerja](https://cdn.discordapp.com/attachments/856609726225973278/1041670812933046282/image.png)
+
+Pada hari kerja di bawah jam 08:00 dan di atas jam 17:00:
+
+![Limit Bandwidth hari kerja jam libur](https://cdn.discordapp.com/attachments/856609726225973278/1041671895491297340/image.png)
 
 ### Konfigurasi pada file `/etc/squid/squid.conf`:
 
@@ -379,3 +422,9 @@ visible_hostname Berlint
 http_access allow WORKING_HOUR_WHITELIST AVAILABLE_WORKING
 http_access deny all
 ```
+
+## Kendala
+
+- Kesulitan debugging akibat kesulitan mencari kesalahan karena tidak ada indikasi tempat error
+- Beberapa materi tidak ada di modul dan harus dicari di internet
+- Terlalu banyak trial dan error (terutama pada bagian bandwidth)
