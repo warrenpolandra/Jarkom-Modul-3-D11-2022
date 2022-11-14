@@ -8,6 +8,12 @@
 
 - Warren Gerald Polandra 5025201233
 
+## Pembagian Tugas:
+
+- Afira: DHCP, Topologi (33.33%)
+- Beryl: DHCP (33.33%)
+- Warren: Proxy (33.33%)
+
 ## Soal 1
 Loid bersama Franky berencana membuat peta tersebut dengan kriteria WISE sebagai DNS Server, Westalis sebagai DHCP Server, Berlint sebagai Proxy Server.
 
@@ -238,3 +244,64 @@ Pada Proxy Server di Berlint, Loid berencana untuk mengatur bagaimana Client dap
 3. Saat akses internet dibuka, client dilarang untuk mengakses web tanpa HTTPS. (Contoh web HTTP: http://example.com)
 4. Agar menghemat penggunaan, akses internet dibatasi dengan kecepatan maksimum 128 Kbps pada setiap host (Kbps = kilobit per second; lakukan pengecekan pada tiap host, ketika 2 host akses internet pada saat bersamaan, keduanya mendapatkan speed maksimal yaitu 128 Kbps)
 5. Setelah diterapkan, ternyata peraturan nomor (4) mengganggu produktifitas saat hari kerja, dengan demikian pembatasan kecepatan hanya diberlakukan untuk pengaksesan internet pada hari libur
+
+### Peraturan nomor 1
+
+Konfigurasi Berlint sebagai Proxy Server pada file `/etc/squid/acl.conf`:
+
+```
+acl AVAILABLE_WORKING time MTWHF 08:00-17:00
+```
+
+### Peraturan nomor 2
+
+Konfigurasi Berlint sebagai Proxy Server pada file `/etc/squid/sites.whitelist.working_hour.txt`:
+
+```
+.loid-work.com
+.franky-work.com
+```
+
+### Peraturan nomor 3
+
+Konfigurasi Berlint sebagai Proxy Server pada file `/etc/squid/https_regex.conf`:
+
+```
+acl HTTPS url_regex ^https://(\.*)$
+```
+
+### Peraturan nomor 4
+
+Konfigurasi Berlint sebagai Proxy Server pada file `/etc/squid/acl-bandwidth.conf`:
+
+```
+delay_pools 1
+delay_class 1 2
+delay_access 1 allow all
+delay_parameters 4 16000/16000
+```
+
+### Peraturan nomor 5
+
+```
+acl day_off time AS 00:00-24:00
+delay_pools 1
+delay_class 1 2
+delay_access 1 allow  day_off
+delay_parameters 4 16000/16000
+```
+
+### Konfigurasi pada file `/etc/squid/squid.conf`:
+
+```
+include /etc/squid/acl.conf
+include /etc/squid/acl-bandwidth.conf
+
+acl WORKING_HOUR_WHITELIST dstdomain \"/etc/squid/sites.whitelist.working_hour.$
+
+http_port 8080
+visible_hostname Berlint
+
+http_access allow WORKING_HOUR_WHITELIST AVAILABLE_WORKING
+http_access deny all
+```
