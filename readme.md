@@ -218,6 +218,12 @@ options {
 };
 ```
 
+Setelah itu restart service berikut:
+
+- bind9: `service bind9 restart` pada WISE sebagai DNS Server
+- DHCP Server: `service isc-dhcp-server restart` pada Westalis sebagai DHCP Server
+- DHCP Relay: `service isc-dhcp-relay restart` pada Ostania sebagai DHCP Relay
+
 ### Hasil DHCP pada client:
 
 Pada SSS:
